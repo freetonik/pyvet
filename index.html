@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Package Maintenance Checker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Pyvet</h1>
+            <details>
+            <summary>
+                Legend and info
+            </summary>
+                <h4>Maintenance status</h4>
+                <ul>
+                    <li>
+                        <code>ACTIVELY MAINTAINED</code>: package supports at least the second latest Python release and is last updated less than 180 days ago
+                    </li>
+                    <li>
+                        <code>MODERATELY MAINTAINED</code>: package supports at least the second latest Python release and is last updated between 180 and 365 days ago
+                    </li>
+                    <li>
+                        <code>POOR MAINTENANCE</code>: package does not support at least the second latest Python release or is not updated in the last 365 days
+                    </li>
+
+                </ul>
+
+                <h4>Python Version Adoption Time</h4>
+                <ul>
+                    <li>
+                        <code>maybe OK</code>: package version was released after given Python version release date
+                    </li>
+                    <li>
+                        <code><span class="emoji">❌</span> not OK</code>: no package version found after given Python version release date
+                    </li>
+                </ul>
+
+                <h4>Claimed (!) Supported Python Versions</h4>
+                <p>Derived from package metadata. Does not guarantee anything. Some packages claim e.g. 'Python >= 3.9', but may not have updates after newer Python versions actually released.</p>
+            </details>
+
+        </header>
+
+        <main>
+            <div class="input-section">
+                <label for="packages">
+                    Enter Python packages (one per line):
+                </label>
+                <textarea
+                    id="packages"
+                    placeholder="requests&#10;numpy&#10;pandas&#10;django"
+                    rows="10"
+                ></textarea>
+                <button id="checkButton" onclick="checkPackages()">Check Maintenance Status</button>
+            </div>
+
+            <div id="loading" class="loading hidden">
+                <div class="spinner"></div>
+                <span>Checking packages...</span>
+            </div>
+
+            <div id="results" class="results-section hidden">
+                <div id="resultsContainer"></div>
+            </div>
+        </main>
+
+        <footer>
+            <div class="footer-content">
+                <span>Made by <a href="https://rakhim.org" target="_blank">Rakhim</a></span>
+                <span class="separator">|</span>
+                <span><a href="https://github.com/freetonik/pyvet" target="_blank">Source code</a></span>
+            </div>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
