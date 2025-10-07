@@ -20,7 +20,7 @@ const PYTHON_RELEASES = {
 async function checkPackages() {
 	// process textarea input; no validation yet, so random text still generates requests to pypi
 	const textarea = document.getElementById("packages");
-	const packages = textarea.value
+	let packages = textarea.value
 		.trim()
 		.split("\n")
 		.filter((p) => p.trim())
@@ -32,6 +32,7 @@ async function checkPackages() {
 				.trim();
 		});
 
+	packages = packages.map((pkg) => pkg.split(" ")[0]);
 	if (packages.length === 0) {
 		alert("Please enter at least one package name");
 		return;
@@ -416,7 +417,7 @@ function createPackageCard(pkg) {
 					data.days !== undefined &&
 					data.days > 180
 				) {
-					return `Python ${version}: likely OK (${data.days}days )`;
+					return `Python ${version}: likely OK (${data.days} days)`;
 				} else {
 					return `Python ${version}: <span class="emoji">❌</span> not OK`;
 				}

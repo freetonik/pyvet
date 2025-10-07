@@ -319,10 +319,14 @@ footer {
 
     html {
         filter: invert(1);
+        background: burlywood;
     }
 
-    .status-badge,
-    .emoji {
+    .status-badge {
+        filter: invert(1);
+    }
+
+    main .emoji {
         filter: invert(1);
     }
 
@@ -330,5 +334,12 @@ footer {
         filter: invert(1);
         background: black;
     }
+
+    header details {
+        filter: invert(1);
+        background-color: burlywood;
+    }
+
+
 
 }
