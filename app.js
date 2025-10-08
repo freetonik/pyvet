@@ -111,11 +111,7 @@ function processPackageData(packageName, data) {
 	const recentReleases = releaseDates.slice(0, 10); // up to 10 latest releases
 	const pythonVersions = extractPythonVersions(info);
 	const releaseFrequency = calculateReleaseFrequency(releaseDates);
-	const pythonAdoptionTime = calculatePythonAdoptionTime(
-		packageName,
-		releaseDates,
-		pythonVersions,
-	);
+	const pythonAdoptionTime = calculatePythonAdoptionTime(releaseDates, pythonVersions);
 
 	const projectUrls = extractProjectUrls(info);
 	const numDeps = info.requires_dist?.length || "?";
@@ -198,15 +194,17 @@ function extractPythonVersions(info) {
 		});
 	}
 
-	const classifiers = info.classifiers || [];
-	classifiers.forEach((classifier) => {
-		const match = classifier.match(
-			/Programming Language :: Python :: (\d+\.?\d*)/, // ugh, ugly af
-		);
-		if (match) {
-			versions.add(match[1]);
-		}
-	});
+    // Sometimes trove classifiers include specific versions, and sometimes they even contradict 'requires_python' value.
+    // Badly maintained packages may have such contradictions. Let's forget about them for now. But man, Python package management is insane.
+	// const classifiers = info.classifiers || [];
+	// classifiers.forEach((classifier) => {
+    //     const match = classifier.match(
+    //         /Programming Language :: Python :: (\d+\.?\d*)/, // ugh, ugly af
+	// 	);
+	// 	if (match) {
+    //         versions.add(match[1]);
+	// 	}
+	// });
 
 	return Array.from(versions).sort((a, b) => {
 		const [aMajor, aMinor] = a.split(".").map(Number);
@@ -267,14 +265,9 @@ function calculateReleaseFrequency(releaseDates) {
 	return Math.round(totalDays / (recentReleases.length - 1));
 }
 
-function calculatePythonAdoptionTime(
-	packageName,
-	releaseDates,
-	supportedVersions,
-) {
+function calculatePythonAdoptionTime(releaseDates, supportedVersions) {
 	const adoptionTimes = {};
 
-	// biome-ignore lint/complexity/noForEach: <explanation>
 	Object.entries(PYTHON_RELEASES).forEach(([pyVersion, pyReleaseDate]) => {
 		// 3.9 is currently at EOL, so we just care about 3.9 and above
 		const [major, minor] = pyVersion.split(".").map(Number);
@@ -283,6 +276,7 @@ function calculatePythonAdoptionTime(
 		}
 
 		if (supportedVersions.includes(pyVersion)) {
+            // find oldest release that was made after python release
 			const firstSupportingRelease = releaseDates.find((release) => {
 				return release.date >= pyReleaseDate;
 			});
@@ -410,17 +404,11 @@ function createPackageCard(pkg) {
 				return bMinor - aMinor;
 			})
 			.map(([version, data]) => {
-				if (data.supported && data.days !== undefined && data.days < 180) {
-					return `Python ${version}: maybe OK (${data.days} days)`;
-				} else if (
-					data.supported &&
-					data.days !== undefined &&
-					data.days > 180
-				) {
-					return `Python ${version}: likely OK (${data.days} days)`;
-				} else {
-					return `Python ${version}: <span class="emoji">❌</span> not OK`;
-				}
+				if (data.supported) {
+                    if (data.days <=7) `Python ${version}: <span class="emoji">❓</span> likely not OK (${data.days} days)`
+                    if (data.days > 7 && data.days < 180) return `Python ${version}: maybe OK (${data.days} days)`;
+				    else return `Python ${version}: likely OK (${data.days} days)`;
+				} else return `Python ${version}: <span class="emoji">❌</span> not OK (no release)`;
 			})
 			.join("<br>");
 		adoptionTimeHtml = adoptionItems;

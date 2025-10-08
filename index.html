@@ -35,10 +35,19 @@
                 <h4>Python Version Adoption Time</h4>
                 <ul>
                     <li>
-                        <code>maybe OK</code>: package version was released after given Python version release date
+                    <code>likely OK</code>: package release found 180+ days after given Python release date
                     </li>
+
                     <li>
-                        <code><span class="emoji">❌</span> not OK</code>: no package version found after given Python version release date
+                    <code>maybe OK</code>: package release found 7-180 days after given Python release date
+                    </li>
+
+                    <li>
+                    <code><span class="emoji">❓</span> likely not OK</code>: package release &lt;7 days after given Python release date
+                    </li>
+
+                    <li>
+                        <code><span class="emoji">❌</span> not OK</code>: no package release found after given Python release date
                     </li>
                 </ul>
 
